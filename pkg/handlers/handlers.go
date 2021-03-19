@@ -1,10 +1,21 @@
 package handlers
 
 import (
-	"github.com/manosriram/go-api/pkg/render"
+	"encoding/json"
 	"net/http"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl");
+type User struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+}
+
+var users []User
+
+func AddUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var user User
+	json.NewDecoder(r.Body).Decode(&user)
+	users = append(users, user)
+	json.NewEncoder(w).Encode(users)
 }
